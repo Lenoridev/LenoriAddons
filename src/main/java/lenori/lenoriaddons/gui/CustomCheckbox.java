@@ -1,6 +1,7 @@
 package lenori.lenoriaddons.gui;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -11,20 +12,21 @@ public class CustomCheckbox {
     public static final Configuration CONFIG = new Configuration(new File("config/LenoriAddons.cfg"));
 
     private int x, y; // Position of the checkbox
-    public boolean isCecked;
+    public boolean isChecked;
     private String label;
-    private static final String CATEGORY_GENERAL = "general";
-    private String KEY_CHECKBOX_STATE;
+    private static final String CATEGORY = "general";
+    private String configId;
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     public CustomCheckbox(int x, int y, String configID) {
         this.x = x;
         this.y = y;
-        this.label = ChatComponent.translatable(configID); //irgendwie so was
-        this.KEY_CHECKBOX_STATE = configID;
-        this.isChecked = CONFIG.getBoolean(KEY_CHECKBOX_STATE, CATEGORY_GENERAL, false, configID);
+        this.configId = configID;
+        this.label = I18n.format(configID);
+        this.isChecked = CONFIG.getBoolean(configId, CATEGORY, false, configID);
     }
 
-    public void drawCheckbox(Minecraft mc, int mouseX, int mouseY) {
+    public void drawCheckbox() {
         // Draw checkbox
         mc.fontRendererObj.drawString(label, x + 20, y + 2, 0xFFFFFF, true);
         drawRect(x, y, x + 10, y + 10, 0xFF000000); // Outer box
@@ -43,7 +45,7 @@ public class CustomCheckbox {
     }
 
     public void saveCheckboxState(){
-        CONFIG.get(CATEGORY_GENERAL, KEY_CHECKBOX_STATE, false).set(isChecked);
+        CONFIG.get(CATEGORY, configId, false).set(isChecked);
     }
 
     // Getter for checkbox state

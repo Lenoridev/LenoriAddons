@@ -38,13 +38,9 @@ public class GuiModSettings extends GuiScreen {
 
     @Override
     public void initGui() {
-        //buttonList.add(new GuiButton(0, width/2 - 50, height/2 - 50, 100, 20, "Install wurst"));
-        //textField = new GuiTextField(2, fontRendererObj, width/2 -50, height/2 +20, 200, 100);
-        //textField.setFocused(true);
-        //textField.setCanLoseFocus(false);
         boxes.clear();
         for (int i = 0; i < 9; i++) {
-            boxes.add(new CustomCheckbox(width/2 - 60, height/2 - (75 - i * 15), checkBoxIds[i]));
+            boxes.add(new CustomCheckbox(width/2 - 75, height/2 - (75 - i * 15), checkBoxIds[i]));
         }
     }
 
@@ -63,11 +59,10 @@ public class GuiModSettings extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        drawRect(width/2 -100, height/2-123, width/2 +170, height/2 +80, 0xFF242424);
+        drawRect(width/2 -150, height/2-123, width/2 +150, height/2 +80, 0xFF242424);
         fontRendererObj.drawString("LENORI ADDONS", width / 2 - fontRendererObj.getStringWidth("LENORI ADDONS") / 2, height / 2 -100, 0x00d415);
         //fontRendererObj.drawString(Double.toString(slider.getValue()), width / 2 - fontRendererObj.getStringWidth(Double.toString(slider.getValue())) / 2, height / 2 -80, 0xFFFFFF);
-        //textField.drawTextBox();
-        boxes.forEach(box -> box.drawCheckbox(Minecraft.getMinecraft(), mouseX, mouseY));
+        boxes.forEach(CustomCheckbox::drawCheckbox);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
