@@ -2,6 +2,7 @@ package lenori.lenoriaddons;
 
 import lenori.lenoriaddons.gui.ImageRenderInfo;
 import lenori.lenoriaddons.io.IgnoreListJsonManager;
+import lenori.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -66,7 +67,7 @@ public class EventHandler {
                 System.out.println("Listening for ignored players");
                 String ignoredPlayerName = message.substring(message.indexOf(".") + 2);
                 System.out.println("List Number: " + listNumber + " Name: " + ignoredPlayerName);
-                jsonManager.addData(listNumber,ignoredPlayerName,MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis());
+                jsonManager.addData(listNumber,ignoredPlayerName, MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis());
                 if(listNumber % 10 == 0) {
                     listenForIgnoreList = false;
                 }

@@ -1,6 +1,6 @@
 package lenori.lenoriaddons.gui;
 
-import lenori.lenoriaddons.MojangAPIClient;
+import lenori.lenoriaddons.io.MojangAPIClient;
 import lenori.lenoriaddons.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

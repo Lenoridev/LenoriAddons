@@ -51,18 +51,22 @@ public class IgnoreListJsonManager {
     }
 
     // Method to load data from the JSON file
-    private void loadData() {
+    public Map<Integer, Map<String, Object>> loadData() {
         FileReader reader = null;
         try {
             reader = new FileReader(filePath);
             Type typeOfMap = new TypeToken<Map<Integer, Map<String, Object>>>(){}.getType();
             idToDataMap = GSON.fromJson(reader, typeOfMap);
-            if (idToDataMap == null) {
-                idToDataMap = new HashMap<Integer, Map<String, Object>>();
+            if (idToDataMap != null) {
+                return idToDataMap;
+            } else {
+                idToDataMap = new HashMap<>();
+                return idToDataMap;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            idToDataMap = new HashMap<Integer, Map<String, Object>>();
+            idToDataMap = new HashMap<>();
+            return idToDataMap;
         } finally {
             if (reader != null) {
                 try {
