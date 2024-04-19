@@ -10,6 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiModSettings extends GuiScreen {
     String[] checkBoxIds = new String[] {
@@ -22,14 +24,14 @@ public class GuiModSettings extends GuiScreen {
         "nametagEffects",
         "dungeonTeammateLogger",
         "tomas"
-    }
+    };
         
 
     private static final Logger LOGGER = LogManager.getLogger();
     //public static Configuration config;
 
     private GuiTextField textField;
-    private List<CustomCheckBox> boxes = new ArrayList<>();
+    private final List<CustomCheckbox> boxes = new ArrayList<>();
 
     private static final ResourceLocation CLICK_SOUND = new ResourceLocation("minecraft", "gui.button.press");
 
@@ -42,20 +44,8 @@ public class GuiModSettings extends GuiScreen {
         //textField.setCanLoseFocus(false);
         boxes.clear();
         for (int i = 0; i < 9; i++) {
-            boxed.add(new CustomCheckbox(width/2 - 60, height/2 - (75 - i * 15), checkBoxIds[i]));
+            boxes.add(new CustomCheckbox(width/2 - 60, height/2 - (75 - i * 15), checkBoxIds[i]));
         }
-
-        checkbox = new CustomCheckbox(width/2 - 60,height/2-75, "Activate Chat Emojis","chatEmojis");
-        checkbox1 = new CustomCheckbox(width/2 - 60,height/2-60, "Activate Custom Runes","customRunes");
-        checkbox2 = new CustomCheckbox(width/2 - 60,height/2-45, "Activate Predev Timer","predevTimer");
-        checkbox3 = new CustomCheckbox(width/2 - 60,height/2-30, "Activate Cata LVL Gui","cataLvlGui");
-        checkbox4 = new CustomCheckbox(width/2 - 60,height/2-15, "Activate Networth Gui","networthGui");
-        checkbox5 = new CustomCheckbox(width/2 - 60,height/2, "Activate Ignore List Notes","ignoreListNotes");
-        checkbox6 = new CustomCheckbox(width/2 - 60,height/2+15, "Activate Nametag Effects","nametagEffects");
-        checkbox7 = new CustomCheckbox(width/2 - 60,height/2+30, "Activate Dungeon Teammate Logger","dungeonTeammateLogger");
-        checkbox8 = new CustomCheckbox(width/2 - 60,height/2+45, "Activate Tomas","tomas");
-
-
     }
 
     @Override

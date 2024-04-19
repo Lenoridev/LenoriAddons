@@ -11,7 +11,7 @@ public class CustomCheckbox {
     public static final Configuration CONFIG = new Configuration(new File("config/LenoriAddons.cfg"));
 
     private int x, y; // Position of the checkbox
-    public boolean isChecked;
+    public boolean isCecked;
     private String label;
     private static final String CATEGORY_GENERAL = "general";
     private String KEY_CHECKBOX_STATE;
@@ -19,7 +19,7 @@ public class CustomCheckbox {
     public CustomCheckbox(int x, int y, String configID) {
         this.x = x;
         this.y = y;
-        this.label = ChatComponent.translatable(configId); //irgendwie so was
+        this.label = ChatComponent.translatable(configID); //irgendwie so was
         this.KEY_CHECKBOX_STATE = configID;
         this.isChecked = CONFIG.getBoolean(KEY_CHECKBOX_STATE, CATEGORY_GENERAL, false, configID);
     }
