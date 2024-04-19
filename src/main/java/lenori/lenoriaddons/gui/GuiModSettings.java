@@ -12,20 +12,24 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 
 public class GuiModSettings extends GuiScreen {
+    String[] checkBoxIds = new String[] {
+        "chatEmojies",
+        "customRunes",
+        "predevTimer",
+        "cataLvlGui",
+        "networthGui",
+        "ignoreListNotes",
+        "nametagEffects",
+        "dungeonTeammateLogger",
+        "tomas"
+    }
+        
 
     private static final Logger LOGGER = LogManager.getLogger();
     //public static Configuration config;
 
     private GuiTextField textField;
-    private CustomCheckbox checkbox;
-    private CustomCheckbox checkbox1;
-    private CustomCheckbox checkbox2;
-    private CustomCheckbox checkbox3;
-    private CustomCheckbox checkbox4;
-    private CustomCheckbox checkbox5;
-    private CustomCheckbox checkbox6;
-    private CustomCheckbox checkbox7;
-    private CustomCheckbox checkbox8;
+    private List<CustomCheckBox> boxes = new ArrayList<>();
 
     private static final ResourceLocation CLICK_SOUND = new ResourceLocation("minecraft", "gui.button.press");
 
@@ -36,6 +40,10 @@ public class GuiModSettings extends GuiScreen {
         //textField = new GuiTextField(2, fontRendererObj, width/2 -50, height/2 +20, 200, 100);
         //textField.setFocused(true);
         //textField.setCanLoseFocus(false);
+        boxes.clear();
+        for (int i = 0; i < 9; i++) {
+            boxed.add(new CustomCheckbox(width/2 - 60, height/2 - (75 - i * 15), checkBoxIds[i]));
+        }
 
         checkbox = new CustomCheckbox(width/2 - 60,height/2-75, "Activate Chat Emojis","chatEmojis");
         checkbox1 = new CustomCheckbox(width/2 - 60,height/2-60, "Activate Custom Runes","customRunes");
@@ -69,19 +77,7 @@ public class GuiModSettings extends GuiScreen {
         fontRendererObj.drawString("LENORI ADDONS", width / 2 - fontRendererObj.getStringWidth("LENORI ADDONS") / 2, height / 2 -100, 0x00d415);
         //fontRendererObj.drawString(Double.toString(slider.getValue()), width / 2 - fontRendererObj.getStringWidth(Double.toString(slider.getValue())) / 2, height / 2 -80, 0xFFFFFF);
         //textField.drawTextBox();
-        checkbox.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox1.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox2.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox3.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox4.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox5.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox6.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox7.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-        checkbox8.drawCheckbox(Minecraft.getMinecraft(), mouseX,  mouseY);
-
-
-
-
+        boxes.forEach(box -> box.drawCheckbox(Minecraft.getMinecraft(), mouseX, mouseY));
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -96,28 +92,12 @@ public class GuiModSettings extends GuiScreen {
     }
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        checkbox.mouseClicked(mouseX, mouseY);
-        checkbox1.mouseClicked(mouseX, mouseY);
-        checkbox2.mouseClicked(mouseX, mouseY);
-        checkbox3.mouseClicked(mouseX, mouseY);
-        checkbox4.mouseClicked(mouseX, mouseY);
-        checkbox5.mouseClicked(mouseX, mouseY);
-        checkbox6.mouseClicked(mouseX, mouseY);
-        checkbox7.mouseClicked(mouseX, mouseY);
-        checkbox8.mouseClicked(mouseX, mouseY);
+        boxes.forEach(box -> box.mouseClicked(mouseX, mouseY));
     }
 
     @Override
     public void onGuiClosed() {
-        checkbox.saveCheckboxState();
-        checkbox1.saveCheckboxState();
-        checkbox2.saveCheckboxState();
-        checkbox3.saveCheckboxState();
-        checkbox4.saveCheckboxState();
-        checkbox5.saveCheckboxState();
-        checkbox6.saveCheckboxState();
-        checkbox7.saveCheckboxState();
-        checkbox8.saveCheckboxState();
+        boxes.forEach(CustomCheckbox::saveCheckboxState);
         super.onGuiClosed();
     }
 
