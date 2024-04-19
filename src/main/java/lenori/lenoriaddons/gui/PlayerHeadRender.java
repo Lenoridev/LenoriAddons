@@ -17,11 +17,10 @@ import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 
 public class PlayerHeadRender {
     private ResourceLocation skinLocation;
-    private Minecraft mc = Minecraft.getMinecraft();
-    private Image skin;
 
     public PlayerHeadRender(int x, int y, int size, String uuid) {
         File imageFile = new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/skins/"+ uuid + ".png");
+        Minecraft mc = Minecraft.getMinecraft();
         if (imageFile.exists()) {
             try {
                 BufferedImage image = ImageIO.read(imageFile);
@@ -31,7 +30,7 @@ public class PlayerHeadRender {
             }
 
         } else {
-            skin = MojangAPIClient.getSkin(uuid);
+            Image skin = MojangAPIClient.getSkin(uuid);
             if (skin != null) {
                 try {
                     if (!imageFile.getParentFile().exists()) {

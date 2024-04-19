@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class IgnoreListJsonManager {
     }
     // Method to add an ID and its corresponding name and timestamp to the map
     public void addData(int id, String name, String uuid, Long timestamp) {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("name", name);
         data.put("uuid", uuid);
         data.put("timestamp", timestamp);
@@ -57,12 +56,10 @@ public class IgnoreListJsonManager {
             reader = new FileReader(filePath);
             Type typeOfMap = new TypeToken<Map<Integer, Map<String, Object>>>(){}.getType();
             idToDataMap = GSON.fromJson(reader, typeOfMap);
-            if (idToDataMap != null) {
-                return idToDataMap;
-            } else {
+            if (idToDataMap == null) {
                 idToDataMap = new HashMap<>();
-                return idToDataMap;
             }
+            return idToDataMap;
         } catch (IOException e) {
             e.printStackTrace();
             idToDataMap = new HashMap<>();

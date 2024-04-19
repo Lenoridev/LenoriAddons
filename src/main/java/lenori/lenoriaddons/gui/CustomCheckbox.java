@@ -11,11 +11,12 @@ import static net.minecraft.client.gui.Gui.drawRect;
 public class CustomCheckbox {
     public static final Configuration CONFIG = new Configuration(new File("config/LenoriAddons.cfg"));
 
-    private int x, y; // Position of the checkbox
+    private final int x;
+    private final int y;
     public boolean isChecked;
-    private String label;
+    private final String label;
     private static final String CATEGORY = "general";
-    private String configId;
+    private final String configId;
     private final Minecraft mc = Minecraft.getMinecraft();
 
     public CustomCheckbox(int x, int y, String configID) {

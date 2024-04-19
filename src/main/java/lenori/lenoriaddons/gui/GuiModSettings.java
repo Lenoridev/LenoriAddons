@@ -67,7 +67,7 @@ public class GuiModSettings extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button){
         switch (button.id) {
             case 0:
                 Minecraft.getMinecraft().displayGuiScreen(new GuiMainMenu()); break;
