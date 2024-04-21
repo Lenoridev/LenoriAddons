@@ -1,18 +1,15 @@
 package lenori.lenoriaddons.gui;
 
 import lenori.lenoriaddons.Reference;
-import lenori.lenoriaddons.io.IgnoreListElement;
 import lenori.lenoriaddons.io.IgnoreListJsonManager;
 import lenori.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -23,7 +20,7 @@ public class GuiIgnoreListNote extends GuiScreen {
     private final String player;
     private final UUID uuid;
     private String page;
-    private List<IgnoreListElement> ignoreList;
+    private Map<UUID, Long> ignoreList;
     private static final IgnoreListJsonManager ignoreListManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
 
 

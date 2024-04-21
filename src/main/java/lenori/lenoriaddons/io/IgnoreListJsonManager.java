@@ -1,24 +1,17 @@
 package lenori.lenoriaddons.io;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import lenori.lenoriaddons.LenoriAddons;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class IgnoreListJsonManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final String filePath;
-    public final Map<UUID, Long> ignoreData = new HashMap<>();
+    public final Map<UUID, Long> ignoreList = new HashMap<>();
 
     public IgnoreListJsonManager(String filePath) {
         this.filePath = filePath;
@@ -50,7 +43,7 @@ public class IgnoreListJsonManager {
 
     private JsonElement serialize() {
         JsonArray array = new JsonArray();
-        ignoreData.forEach((uuid, timestamp) -> {
+        ignoreList.forEach((uuid, timestamp) -> {
             JsonObject object = new JsonObject();
             object.addProperty("uuid", uuid.toString());
             object.addProperty("timestamp", timestamp);
@@ -67,12 +60,15 @@ public class IgnoreListJsonManager {
                 return;
             }
             JsonArray array = (JsonArray) element;
-            for (JsonElement element : array) {
-                if (!element.isJsonObject()) continue;
-                JsonObject object = (JsonObject) element;
+            for (JsonElement element1 : array) {
+                if (!element1.isJsonObject()) {
+                    LenoriAddons.LOGGER.warn("Element of JsonArray is not a JsonObject!");
+                    continue;
+                }
+                JsonObject object = (JsonObject) element1;
                 UUID uuid = UUID.fromString(object.getAsJsonPrimitive("uuid").getAsString());
-                long timestamp = oject.getAsJsonPrimitive("timestamp").getAsLong());
-                ignoreData.put(uuid, timestamp);
+                long timestamp = object.getAsJsonPrimitive("timestamp").getAsLong();
+                ignoreList.put(uuid, timestamp);
             }
         } catch (IOException e) {
             e.printStackTrace();
