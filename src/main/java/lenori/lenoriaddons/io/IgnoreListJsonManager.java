@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class IgnoreListJsonManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final String filePath;
-    public final List<IgnoreListElement> ignoreList = new ArrayList<>();
+    public final Map<UUID, Long> ignoreData = new HashMap<>();
 
     public IgnoreListJsonManager(String filePath) {
         this.filePath = filePath;
@@ -33,8 +33,8 @@ public class IgnoreListJsonManager {
         loadData();
     }
 
-    public void addData(String name, UUID uuid, Long timestamp) {
-        ignoreList.add(new IgnoreListElement(name, uuid, timestamp));
+    public void addData(UUID uuid, Long timestamp) {
+        ignoreList.putIfAbsent(uuid, timestamp);
         saveToFile();
     }
 
@@ -50,7 +50,12 @@ public class IgnoreListJsonManager {
 
     private JsonElement serialize() {
         JsonArray array = new JsonArray();
-        ignoreList.stream().map(IgnoreListElement::save).forEach(array::add);
+        ignoreData.forEach((uuid, timestamp) -> {
+            JsonObject object = new JsonObject();
+            object.addProperty("uuid", uuid.toString());
+            object.addProperty("timestamp", timestamp);
+            array.add(object);
+        });
         return array;
     }
 
@@ -62,7 +67,13 @@ public class IgnoreListJsonManager {
                 return;
             }
             JsonArray array = (JsonArray) element;
-            ignoreList.addAll(Stream.of(array).map(IgnoreListElement::deserialize).collect(Collectors.toList())) ;
+            for (JsonElement element : array) {
+                if (!element.isJsonObject()) continue;
+                JsonObject object = (JsonObject) element;
+                UUID uuid = UUID.fromString(object.getAsJsonPrimitive("uuid").getAsString());
+                long timestamp = oject.getAsJsonPrimitive("timestamp").getAsLong());
+                ignoreData.put(uuid, timestamp);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
