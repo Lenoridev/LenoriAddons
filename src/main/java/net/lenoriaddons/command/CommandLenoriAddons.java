@@ -1,6 +1,6 @@
-package lenori.lenoriaddons.command;
+package net.lenoriaddons.command;
 
-import lenori.lenoriaddons.gui.GuiModSettings;
+import net.lenoriaddons.gui.GuiModSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

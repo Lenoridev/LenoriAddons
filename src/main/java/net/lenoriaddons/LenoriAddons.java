@@ -1,8 +1,8 @@
-package lenori.lenoriaddons;
+package net.lenoriaddons;
 
-import lenori.lenoriaddons.command.CommandIgnoreNote;
-import lenori.lenoriaddons.command.CommandLenoriAddons;
-import lenori.lenoriaddons.gui.GuiHandler;
+import net.lenoriaddons.command.CommandIgnoreNote;
+import net.lenoriaddons.command.CommandLenoriAddons;
+import net.lenoriaddons.gui.GuiHandler;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

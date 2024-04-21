@@ -1,4 +1,4 @@
-package lenori.lenoriaddons.gui;
+package net.lenoriaddons.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

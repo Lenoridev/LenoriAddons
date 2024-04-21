@@ -1,6 +1,6 @@
-package lenori.lenoriaddons.command;
+package net.lenoriaddons.command;
 
-import lenori.lenoriaddons.gui.GuiIgnoreListNote;
+import net.lenoriaddons.gui.GuiIgnoreListNote;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

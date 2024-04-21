@@ -1,9 +1,9 @@
-package lenori.lenoriaddons.io;
+package net.lenoriaddons.io;
 
 import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
-import lenori.lenoriaddons.LenoriAddons;
+import net.lenoriaddons.LenoriAddons;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package lenori.lenoriaddons.gui;
+package net.lenoriaddons.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;

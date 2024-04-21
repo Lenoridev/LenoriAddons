@@ -1,4 +1,4 @@
-package lenori.lenoriaddons;
+package net.lenoriaddons;
 
 
 public class Reference {

@@ -1,4 +1,4 @@
-package lenori.lenoriaddons.io;
+package net.lenoriaddons.io;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

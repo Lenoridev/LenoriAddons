@@ -1,8 +1,8 @@
-package lenori.lenoriaddons;
+package net.lenoriaddons;
 
-import lenori.lenoriaddons.gui.ImageRenderInfo;
-import lenori.lenoriaddons.io.IgnoreListJsonManager;
-import lenori.lenoriaddons.io.MojangAPIClient;
+import net.lenoriaddons.gui.ImageRenderInfo;
+import net.lenoriaddons.io.IgnoreListJsonManager;
+import net.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiInventory;

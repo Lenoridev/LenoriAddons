@@ -1,8 +1,8 @@
-package lenori.lenoriaddons.gui;
+package net.lenoriaddons.gui;
 
-import lenori.lenoriaddons.Reference;
-import lenori.lenoriaddons.io.IgnoreListJsonManager;
-import lenori.lenoriaddons.io.MojangAPIClient;
+import net.lenoriaddons.Reference;
+import net.lenoriaddons.io.IgnoreListJsonManager;
+import net.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,22 +12,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class GuiIgnoreListNote extends GuiScreen {
 
     private GuiTextField textField;
     private final String addedText;
     private final String player;
-    private final UUID uuid;
     private String page;
     private Map<UUID, Long> ignoreList;
     private static final IgnoreListJsonManager ignoreListManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
-
+    private final List<PlayerListObject> playerListObjects = new ArrayList<>();
 
     public GuiIgnoreListNote(String argPlayer, String argAddedText) {
         player = argPlayer;
         addedText = argAddedText;
-        uuid = MojangAPIClient.getUUID(player, -1);
         ignoreList = ignoreListManager.ignoreList;
     }
 
@@ -40,6 +39,9 @@ public class GuiIgnoreListNote extends GuiScreen {
         if(addedText != null){
             textField.setText(addedText);
         }
+        playerListObjects.clear();
+        final int[] i = {0};
+        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, width/2+((-250)-13*i[0]),uuid)); i[0]++;});
         page= "main";
     }
 
@@ -60,11 +62,12 @@ public class GuiIgnoreListNote extends GuiScreen {
         switch (page) {
             case "main":
                 drawRect(width / 2 - 150, height / 2 - 123, width / 2 + 150, height / 2 + 180, 0xFF242424);
-                PlayerListObject listObject = new PlayerListObject(width/2-75, height/2, uuid);
+                fontRendererObj.drawString("Ignore List", width / 2 - fontRendererObj.getStringWidth("Ignore List") / 2, height / 2 -116, 0x00d415);
+                playerListObjects.forEach(PlayerListObject :: drawScreen);
             case "profile":
-                fontRendererObj.drawString("IGNORE NOTE "+ player, width / 2 - fontRendererObj.getStringWidth("IGNORE NOTE "+ MojangAPIClient.getName(uuid)) / 2, height / 2 -116, 0x00d415);
-                fontRendererObj.drawString("UUID: "+ uuid, width / 2 - fontRendererObj.getStringWidth("UUID: " + uuid) / 2, height / 2 -100, 0x00d415);
-                textField.drawTextBox();
+                //fontRendererObj.drawString("IGNORE NOTE "+ player, width / 2 - fontRendererObj.getStringWidth("IGNORE NOTE "+ MojangAPIClient.getName(uuid)) / 2, height / 2 -116, 0x00d415);
+                //fontRendererObj.drawString("UUID: "+ uuid, width / 2 - fontRendererObj.getStringWidth("UUID: " + uuid) / 2, height / 2 -100, 0x00d415);
+                //textField.drawTextBox();
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

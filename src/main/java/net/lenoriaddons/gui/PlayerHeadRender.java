@@ -1,7 +1,7 @@
-package lenori.lenoriaddons.gui;
+package net.lenoriaddons.gui;
 
-import lenori.lenoriaddons.io.MojangAPIClient;
-import lenori.lenoriaddons.Reference;
+import net.lenoriaddons.io.MojangAPIClient;
+import net.lenoriaddons.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
