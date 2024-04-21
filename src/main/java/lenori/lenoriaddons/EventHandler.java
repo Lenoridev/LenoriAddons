@@ -29,11 +29,11 @@ public class EventHandler {
     int startIndex;
     int endIndex;
     int listNumber;
-    public static IgnoreListJsonManager jsonManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignoreList.json").getPath());
+    public static IgnoreListJsonManager jsonManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
 
 
     private static final Logger LOGGER = LogManager.getLogger();
-    List<ImageRenderInfo> imagesToRender = new ArrayList<ImageRenderInfo>();
+    List<ImageRenderInfo> imagesToRender = new ArrayList<>();
 
     @SubscribeEvent
     public void onPlayerSleep(PlayerSleepInBedEvent event) {
@@ -67,7 +67,7 @@ public class EventHandler {
                 System.out.println("Listening for ignored players");
                 String ignoredPlayerName = message.substring(message.indexOf(".") + 2);
                 System.out.println("List Number: " + listNumber + " Name: " + ignoredPlayerName);
-                jsonManager.addData(listNumber,ignoredPlayerName, MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis());
+                jsonManager.addData(ignoredPlayerName, MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis());
                 if(listNumber % 10 == 0) {
                     listenForIgnoreList = false;
                 }

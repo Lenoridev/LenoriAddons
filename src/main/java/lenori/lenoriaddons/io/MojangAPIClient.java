@@ -12,14 +12,15 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.UUID;
 
 public class MojangAPIClient {
     private static URL url;
+    private static final JsonParser jsonParser = new JsonParser();
 
-    public static String getUUID(String name, int timestamp) {
+    public static UUID getUUID(String name, int timestamp) {
         try {
             if (timestamp >= 0) {
                 url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + timestamp);
@@ -28,7 +29,8 @@ public class MojangAPIClient {
             }
 
             InputStreamReader reader = new InputStreamReader(url.openStream());
-            return new JsonParser().parse(reader).getAsJsonObject().get("id").getAsString();
+            String idString = jsonParser.parse(reader).getAsJsonObject().get("id").getAsString();
+            return UUID.fromString(idString.substring(0, 8) + "-" + idString.substring(8, 12) + "-" + idString.substring(12, 16) + "-" + idString.substring(16, 20) + "-" + idString.substring(20));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,7 +38,7 @@ public class MojangAPIClient {
         }
     }
 
-    public static Image getSkin(String uuid) {
+    public static Image getSkin(UUID uuid) {
         try {
             URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
             InputStreamReader reader = new InputStreamReader(url.openStream());
@@ -55,7 +57,7 @@ public class MojangAPIClient {
     }
 
     @Nullable
-    public static String getName(String uuid) {
+    public static String getName(UUID uuid) {
         try {
             HttpURLConnection connection = getGetConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
             int status = connection.getResponseCode();

@@ -12,13 +12,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 
 public class PlayerHeadRender {
     private ResourceLocation skinLocation;
 
-    public PlayerHeadRender(int x, int y, int size, String uuid) {
+    public PlayerHeadRender(int x, int y, int size, UUID uuid) {
         File imageFile = new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/skins/"+ uuid + ".png");
         Minecraft mc = Minecraft.getMinecraft();
         if (imageFile.exists()) {

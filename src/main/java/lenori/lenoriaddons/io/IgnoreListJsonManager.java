@@ -4,26 +4,32 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.reflect.TypeToken;
+import lenori.lenoriaddons.LenoriAddons;
 
-import lenori.lenoriaddons.io.IgnoreListElement;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IgnoreListJsonManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final String filePath;
-    private final List<IgnoreListElement> ignoreList = new ArrayList<>(); 
+    public final List<IgnoreListElement> ignoreList = new ArrayList<>();
 
     public IgnoreListJsonManager(String filePath) {
         this.filePath = filePath;
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         loadData();
     }
 
@@ -33,9 +39,8 @@ public class IgnoreListJsonManager {
     }
 
     private void saveToFile() {
-        FileWriter writer = null;
         try {
-            writer = new FileWriter(filePath);
+            FileWriter writer = new FileWriter(filePath);
             writer.write(GSON.toJson(serialize()));
             writer.close();
         } catch (IOException e) {
@@ -49,15 +54,17 @@ public class IgnoreListJsonManager {
         return array;
     }
 
-    public List<IgnoreListElement> loadData() {
+    public void loadData() {
         try {
-            JsonElement element = Streams.parse(new JsonReader(new FileReader(filePath));
-            if (!element.isJsonArray()) throw new IllegalStateException("detected config not being json array!");
+            JsonElement element = Streams.parse(new JsonReader(new FileReader(filePath)));
+            if (!element.isJsonArray()) {
+                LenoriAddons.LOGGER.warn("IgnoreList is not a Json Array!");
+                return;
+            }
             JsonArray array = (JsonArray) element;
-            return new ArrayList<>(Stream.of(array).forEach(IgnoreListElement::deserialize).toList());
+            ignoreList.addAll(Stream.of(array).map(IgnoreListElement::deserialize).collect(Collectors.toList())) ;
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList();
         }
     }
 }

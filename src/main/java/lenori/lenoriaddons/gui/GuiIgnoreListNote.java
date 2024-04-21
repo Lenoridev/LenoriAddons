@@ -1,6 +1,7 @@
 package lenori.lenoriaddons.gui;
 
 import lenori.lenoriaddons.Reference;
+import lenori.lenoriaddons.io.IgnoreListElement;
 import lenori.lenoriaddons.io.IgnoreListJsonManager;
 import lenori.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
@@ -13,24 +14,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GuiIgnoreListNote extends GuiScreen {
 
     private GuiTextField textField;
-    private String addedText;
-    private String player;
-    private String uuid;
+    private final String addedText;
+    private final String player;
+    private final UUID uuid;
     private String page;
-    Map<Integer, Map<String, Object>> ignoreListMap;
+    private List<IgnoreListElement> ignoreList;
+    private static final IgnoreListJsonManager ignoreListManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
 
 
     public GuiIgnoreListNote(String argPlayer, String argAddedText) {
         player = argPlayer;
         addedText = argAddedText;
         uuid = MojangAPIClient.getUUID(player, -1);
-        ignoreListMap = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignoreList.json").getPath()).loadData();
+        ignoreList = ignoreListManager.ignoreList;
     }
 
     @Override
