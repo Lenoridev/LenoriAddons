@@ -18,10 +18,17 @@ import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 
 public class PlayerHeadRender {
     private ResourceLocation skinLocation;
+    private final Minecraft mc = Minecraft.getMinecraft();
+    public int x,y,size;
+    private final UUID uuid;
 
     public PlayerHeadRender(int x, int y, int size, UUID uuid) {
+        this.x =x;
+        this.y =y;
+        this.size= size;
+        this.uuid =uuid;
+
         File imageFile = new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/skins/"+ uuid + ".png");
-        Minecraft mc = Minecraft.getMinecraft();
         if (imageFile.exists()) {
             try {
                 BufferedImage image = ImageIO.read(imageFile);
@@ -65,8 +72,10 @@ public class PlayerHeadRender {
                 System.err.println("No skin image to save!");
             }
         }
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+    }
 
+    public void render(){
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         if (skinLocation != null) {
             if(size>0) {
                 mc.getTextureManager().bindTexture(skinLocation);

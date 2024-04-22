@@ -1,5 +1,6 @@
 package net.lenoriaddons.gui;
 
+import com.typesafe.config.ConfigException;
 import net.lenoriaddons.Reference;
 import net.lenoriaddons.io.IgnoreListJsonManager;
 import net.lenoriaddons.io.MojangAPIClient;
@@ -7,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.lwjgl.input.Mouse;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -41,7 +43,7 @@ public class GuiIgnoreListNote extends GuiScreen {
         }
         playerListObjects.clear();
         final int[] i = {0};
-        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, width/2+((-250)-13*i[0]),uuid)); i[0]++;});
+        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/2+((-250)-13*i[0]),uuid)); i[0]++;});
         page= "main";
     }
 
@@ -73,6 +75,17 @@ public class GuiIgnoreListNote extends GuiScreen {
     }
 
     @Override
+    public void handleMouseInput() throws IOException {
+        int scrollDelta = Mouse.getEventDWheel();
+        if (scrollDelta != 0) {
+            for (PlayerListObject listObject : playerListObjects) {
+                listObject.changeY(scrollDelta);
+            }
+        }
+        super.handleMouseInput();
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException {
 
     }
@@ -88,13 +101,5 @@ public class GuiIgnoreListNote extends GuiScreen {
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
-        return false;
-    }
-
-    // Basically trash
-    private void drawImageWithAlpha(BufferedImage image, int x, int y, int width, int height) {
-
-    }
-
+    public boolean doesGuiPauseGame(){return false;}
 }

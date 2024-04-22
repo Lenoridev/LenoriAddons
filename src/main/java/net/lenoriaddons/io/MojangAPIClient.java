@@ -20,6 +20,7 @@ public class MojangAPIClient {
     private static URL url;
     private static final JsonParser jsonParser = new JsonParser();
 
+    @Nullable
     public static UUID getUUID(String name, int timestamp) {
         try {
             if (timestamp >= 0) {
