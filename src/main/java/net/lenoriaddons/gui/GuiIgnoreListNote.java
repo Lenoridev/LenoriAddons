@@ -1,20 +1,16 @@
 package net.lenoriaddons.gui;
 
-import com.typesafe.config.ConfigException;
 import net.lenoriaddons.Reference;
 import net.lenoriaddons.io.IgnoreListJsonManager;
-import net.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Mouse;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class GuiIgnoreListNote extends GuiScreen {
 
@@ -25,10 +21,11 @@ public class GuiIgnoreListNote extends GuiScreen {
     private Map<UUID, Long> ignoreList;
     private static final IgnoreListJsonManager ignoreListManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
     private final List<PlayerListObject> playerListObjects = new ArrayList<>();
+    private int scrolledHeight = 0;
 
-    public GuiIgnoreListNote(String argPlayer, String argAddedText) {
-        player = argPlayer;
-        addedText = argAddedText;
+    public GuiIgnoreListNote(String player, String addedText) {
+        this.player = player;
+        this.addedText = addedText;
         ignoreList = ignoreListManager.ignoreList;
     }
 
@@ -43,7 +40,7 @@ public class GuiIgnoreListNote extends GuiScreen {
         }
         playerListObjects.clear();
         final int[] i = {0};
-        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/2+((-250)-13*i[0]),uuid)); i[0]++;});
+        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/3+13*i[0],uuid)); i[0]++;});
         page= "main";
     }
 
@@ -77,11 +74,14 @@ public class GuiIgnoreListNote extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         int scrollDelta = Mouse.getEventDWheel();
+        scrolledHeight += scrollDelta/5;
         if (scrollDelta != 0) {
             for (PlayerListObject listObject : playerListObjects) {
-                listObject.changeY(scrollDelta);
+                listObject.setY(scrolledHeight);
+                listObject.visible = listObject.y >= height / 2 - 40;
             }
         }
+        System.out.println(scrollDelta);
         super.handleMouseInput();
     }
 
