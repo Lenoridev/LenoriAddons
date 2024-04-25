@@ -3,6 +3,9 @@ package net.lenoriaddons.gui;
 import net.minecraft.util.ResourceLocation;
 
 public class ImageRenderInfo {
+
+    //Unused, will probably be deleted soon
+
     public ResourceLocation image;
     public int x;
     public int y;

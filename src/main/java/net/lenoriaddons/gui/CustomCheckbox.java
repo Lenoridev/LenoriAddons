@@ -1,5 +1,6 @@
 package net.lenoriaddons.gui;
 
+import net.lenoriaddons.io.SoundManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.Configuration;
@@ -28,21 +29,18 @@ public class CustomCheckbox {
     }
 
     public void drawCheckbox() {
-        // Draw checkbox
         mc.fontRendererObj.drawString(label, x + 20, y + 2, 0xFFFFFF, true);
         drawRect(x, y, x + 10, y + 10, 0xFF000000); // Outer box
-        if (isChecked) {//bei mir sieht das ein wenig anders aus...
+        if (isChecked) {
             drawRect(x + 2, y + 2, x + 8, y + 8, 0xFFFFFFFF); // Inner box (checked)
         }
     }
 
-    public boolean mouseClicked(int mouseX, int mouseY) {
+    public void mouseClicked(int mouseX, int mouseY) {
         if (mouseX >= x && mouseX <= x + 10 && mouseY >= y && mouseY <= y + 10) {
             isChecked = !isChecked;
-            GuiModSettings.playClickSound();
-            return true; // Checkbox clicked
+            SoundManager.playClickSound();
         }
-        return false; // Checkbox not clicked
     }
 
     public void saveCheckboxState(){

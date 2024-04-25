@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiModSettings extends GuiScreen {
-    String[] checkBoxIds = new String[] {
+    String[] checkboxIDs = new String[] {
         "chatEmojies",
         "customRunes",
         "predevTimer",
@@ -33,14 +33,12 @@ public class GuiModSettings extends GuiScreen {
     private GuiTextField textField;
     private final List<CustomCheckbox> boxes = new ArrayList<>();
 
-    private static final ResourceLocation CLICK_SOUND = new ResourceLocation("minecraft", "gui.button.press");
-
 
     @Override
     public void initGui() {
         boxes.clear();
         for (int i = 0; i < 9; i++) {
-            boxes.add(new CustomCheckbox(width/2 - 75, height/2 - (75 - i * 15), checkBoxIds[i]));
+            boxes.add(new CustomCheckbox(width/2 - 75, height/2 - (75 - i * 15), checkboxIDs[i]));
         }
     }
 
@@ -84,14 +82,6 @@ public class GuiModSettings extends GuiScreen {
     public void onGuiClosed() {
         boxes.forEach(CustomCheckbox::saveCheckboxState);
         super.onGuiClosed();
-    }
-
-    public static void playClickSound() {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (player != null) {
-            SoundHandler soundHandler = Minecraft.getMinecraft().getSoundHandler();
-            soundHandler.playSound(PositionedSoundRecord.create(CLICK_SOUND, 1.0f));
-        }
     }
 
     @Override
