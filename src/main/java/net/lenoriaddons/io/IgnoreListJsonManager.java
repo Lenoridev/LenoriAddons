@@ -3,6 +3,7 @@ package net.lenoriaddons.io;
 import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
+import javafx.util.Pair;
 import net.lenoriaddons.LenoriAddons;
 
 import java.io.*;
@@ -11,7 +12,7 @@ import java.util.*;
 public class IgnoreListJsonManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final String filePath;
-    public final Map<UUID, Long> ignoreList = new HashMap<>();
+    public final Map<UUID, IgnoreDataObject> ignoreList = new HashMap<>();
 
     public IgnoreListJsonManager(String filePath) {
         this.filePath = filePath;
@@ -26,8 +27,8 @@ public class IgnoreListJsonManager {
         loadData();
     }
 
-    public void addData(UUID uuid, Long timestamp) {
-        ignoreList.putIfAbsent(uuid, timestamp);
+    public void addData(UUID uuid, Long timestamp, String note) {
+        ignoreList.put(uuid, new IgnoreDataObject(timestamp, note));
         saveToFile();
     }
 
@@ -43,10 +44,11 @@ public class IgnoreListJsonManager {
 
     private JsonElement serialize() {
         JsonArray array = new JsonArray();
-        ignoreList.forEach((uuid, timestamp) -> {
+        ignoreList.forEach((uuid, ignoreDataObject) -> {
             JsonObject object = new JsonObject();
             object.addProperty("uuid", uuid.toString());
-            object.addProperty("timestamp", timestamp);
+            object.addProperty("timestamp", ignoreDataObject.timestamp);
+            object.addProperty("note", ignoreDataObject.note);
             array.add(object);
         });
         return array;
@@ -68,10 +70,21 @@ public class IgnoreListJsonManager {
                 JsonObject object = (JsonObject) element1;
                 UUID uuid = UUID.fromString(object.getAsJsonPrimitive("uuid").getAsString());
                 long timestamp = object.getAsJsonPrimitive("timestamp").getAsLong();
-                ignoreList.put(uuid, timestamp);
+                String note = object.getAsJsonPrimitive("note").getAsString();
+                ignoreList.put(uuid, new IgnoreDataObject(timestamp, note));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    public static class IgnoreDataObject {
+        public Long timestamp;
+        public String note;
+        private IgnoreDataObject(Long timestamp, String note) {
+            this.timestamp = timestamp;
+            this.note = note;
+        }
+    }
 }
+
+

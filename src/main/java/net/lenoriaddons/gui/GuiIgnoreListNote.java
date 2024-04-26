@@ -1,5 +1,6 @@
 package net.lenoriaddons.gui;
 
+import javafx.util.Pair;
 import net.lenoriaddons.Reference;
 import net.lenoriaddons.io.IgnoreListJsonManager;
 import net.lenoriaddons.io.MojangAPIClient;
@@ -17,7 +18,7 @@ public class GuiIgnoreListNote extends GuiScreen {
     private GuiTextField textField;
     private final String addedText;
     private String playerName,page;
-    private Map<UUID, Long> ignoreList;
+    private Map<UUID, IgnoreListJsonManager.IgnoreDataObject> ignoreList;
     private static final IgnoreListJsonManager ignoreListManager = new IgnoreListJsonManager(new File(Minecraft.getMinecraft().mcDataDir, "cache/"+ Reference.MODID + "/ignore_list.json").getPath());
     private final List<PlayerListObject> playerListObjects = new ArrayList<>();
     private UUID uuid;
@@ -39,13 +40,11 @@ public class GuiIgnoreListNote extends GuiScreen {
         textField.setFocused(true);
         textField.setCanLoseFocus(false);
         textField.setMaxStringLength(999);
-        if(addedText != null){
-            textField.setText(addedText);
-        }
+        //if(addedText == null) textField.setText(ignoreList.get(uuid).note); else textField.setText(addedText);
         playerListObjects.clear();
         final int[] i = {0};
-        ignoreList.forEach((uuid, Long) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/3+13*i[0],uuid)); i[0]++;});
-        page= "main";
+        ignoreList.forEach((uuid, ignoreDataObject) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/3+13*i[0],uuid)); i[0]++;});
+        if (playerName == null) page = "main"; else page = "profile";
         for (PlayerListObject listObject : playerListObjects) {
             listObject.visible = (listObject.y >= height / 2 - 100) && (listObject.y <= height / 2 + 165);
         }
@@ -105,15 +104,24 @@ public class GuiIgnoreListNote extends GuiScreen {
                 uuid = listObject.uuid;
                 playerName = MojangAPIClient.getName(uuid);
                 headRender = new PlayerHeadRender(width/2-48, height/2-50, 6, uuid);
+                textField.setText(ignoreList.get(uuid).note);
                 break;
             }
         }
-        if (backButton.mouseClicked(mouseX, mouseY)) page = "main";
+        if (backButton.mouseClicked(mouseX, mouseY)) {
+            page = "main";
+            saveNote();
+        }
     }
 
     @Override
     public void onGuiClosed() {
+        saveNote();
         super.onGuiClosed();
+    }
+
+    private void saveNote() {
+        if (textField.getText() != null && uuid != null) ignoreListManager.addData(uuid, ignoreList.get(uuid).timestamp, textField.getText());
     }
 
     @Override

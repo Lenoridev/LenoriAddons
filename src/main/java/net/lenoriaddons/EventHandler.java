@@ -68,7 +68,7 @@ public class EventHandler {
                 String ignoredPlayerName = message.substring(message.indexOf(".") + 2);
                 System.out.println("List Number: " + listNumber + " Name: " + ignoredPlayerName);
                 if (MojangAPIClient.getUUID(ignoredPlayerName, -1) != null) {
-                    jsonManager.addData(MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis());
+                    jsonManager.addData(MojangAPIClient.getUUID(ignoredPlayerName, -1), System.currentTimeMillis(), "");
                 } else LenoriAddons.LOGGER.warn("Failed to fetch UUID of player " + ignoredPlayerName);
                 if(listNumber % 10 == 0) {
                     listenForIgnoreList = false;
