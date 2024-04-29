@@ -15,7 +15,7 @@ import java.util.*;
 
 public class GuiIgnoreListNote extends GuiScreen {
 
-    private GuiTextField textField;
+    private GuiElementTextField elementTextField;
     private final String addedText;
     private String playerName,page;
     private Map<UUID, IgnoreListJsonManager.IgnoreDataObject> ignoreList;
@@ -27,6 +27,7 @@ public class GuiIgnoreListNote extends GuiScreen {
     private final int LIST_SIZE = 20;
     private PlayerHeadRender headRender;
 
+
     public GuiIgnoreListNote(String player, String addedText) {
         this.playerName = player;
         this.addedText = addedText;
@@ -35,12 +36,11 @@ public class GuiIgnoreListNote extends GuiScreen {
 
     @Override
     public void initGui() {
-        textField = new GuiTextField(1, fontRendererObj, width/2 -90, height/2 +50, 200, 100);
+        elementTextField = new GuiElementTextField("", 200,10,0b1000001);
         backButton = new BackButton(width/2-110, height/2-100);
-        textField.setFocused(true);
-        textField.setCanLoseFocus(false);
-        textField.setMaxStringLength(999);
-        //if(addedText == null) textField.setText(ignoreList.get(uuid).note); else textField.setText(addedText);
+        elementTextField.setFocus(true);
+        elementTextField.setMaxStringLength(999);
+        if(addedText == null) elementTextField.setText(ignoreList.get(uuid).note); else elementTextField.setText(addedText);
         playerListObjects.clear();
         final int[] i = {0};
         ignoreList.forEach((uuid, ignoreDataObject) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/3+13*i[0],uuid)); i[0]++;});
@@ -52,13 +52,12 @@ public class GuiIgnoreListNote extends GuiScreen {
 
     @Override
     public void updateScreen() {
-        textField.updateCursorCounter();
         super.updateScreen();
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        textField.textboxKeyTyped(typedChar, keyCode);
+        elementTextField.keyTyped(typedChar, keyCode);
         super.keyTyped(typedChar, keyCode);
     }
 
@@ -79,7 +78,7 @@ public class GuiIgnoreListNote extends GuiScreen {
             fontRendererObj.drawString("IGNORE NOTE "+ playerName, width / 2 - fontRendererObj.getStringWidth("IGNORE NOTE "+ playerName) / 2, height / 2 -116, 0x00d415);
             //fontRendererObj.drawString("UUID: "+ uuid, width / 2 - fontRendererObj.getStringWidth("UUID: " + uuid) / 2, height / 2 -100, 0x00d415);
             backButton.render();
-            textField.drawTextBox();
+            elementTextField.render(width/2 -90, height/2 +50);
             headRender.render();
         } else page="main";
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -104,7 +103,7 @@ public class GuiIgnoreListNote extends GuiScreen {
                 uuid = listObject.uuid;
                 playerName = MojangAPIClient.getName(uuid);
                 headRender = new PlayerHeadRender(width/2-48, height/2-50, 6, uuid);
-                textField.setText(ignoreList.get(uuid).note);
+                elementTextField.setText(ignoreList.get(uuid).note);
                 break;
             }
         }
@@ -121,7 +120,7 @@ public class GuiIgnoreListNote extends GuiScreen {
     }
 
     private void saveNote() {
-        if (textField.getText() != null && uuid != null) ignoreListManager.addData(uuid, ignoreList.get(uuid).timestamp, textField.getText());
+        if (elementTextField.getText() != null && uuid != null) ignoreListManager.addData(uuid, ignoreList.get(uuid).timestamp, elementTextField.getText());
     }
 
     @Override
