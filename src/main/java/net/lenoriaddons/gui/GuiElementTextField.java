@@ -35,6 +35,9 @@ public class GuiElementTextField {
     private int searchBarXSize;
     private static final int searchBarPadding = 2;
 
+    private final int MAX_LINES;
+    private int startIndex;
+
     private int options;
 
     private boolean focus = false;
@@ -52,7 +55,7 @@ public class GuiElementTextField {
 
     private int customBorderColour = -1;
 
-    public GuiElementTextField(String initialText, int sizeX, int sizeY, int options) {
+    public GuiElementTextField(String initialText, int sizeX, int sizeY, int maxLines, int options) {
         textField.setFocused(true);
         textField.setCanLoseFocus(false);
         textField.setMaxStringLength(999);
@@ -60,6 +63,7 @@ public class GuiElementTextField {
         this.searchBarXSize = sizeX;
         this.searchBarYSize = sizeY;
         this.options = options;
+        this.MAX_LINES = maxLines;
     }
 
     public void setMaxStringLength(int len) {
@@ -535,7 +539,7 @@ public class GuiElementTextField {
         int xStartOffset = 5;
         float scale = 1;
         String[] texts = text.split("\n");
-        for (int yOffI = 0; yOffI < texts.length; yOffI++) {
+        for (int yOffI = startIndex; yOffI < texts.length; yOffI++) {
             int yOff = yOffI * extraSize;
 
             if (isScaling() && Minecraft.getMinecraft().fontRendererObj.getStringWidth(texts[yOffI]) > searchBarXSize - 10) {
@@ -668,5 +672,11 @@ public class GuiElementTextField {
                 texX += len * scale;
             }
         }
+    }
+
+    public void scroll(int scrollDelta) {
+        if (scrollDelta < 0) {
+            if (startIndex < org.apache.commons.lang3.StringUtils.countMatches(prependText + getText(), "\n") - MAX_LINES) startIndex++;
+        } else if (startIndex > 0) startIndex--;
     }
 }

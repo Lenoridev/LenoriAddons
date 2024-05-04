@@ -1,12 +1,10 @@
 package net.lenoriaddons.gui;
 
-import javafx.util.Pair;
 import net.lenoriaddons.Reference;
 import net.lenoriaddons.io.IgnoreListJsonManager;
 import net.lenoriaddons.io.MojangAPIClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import org.lwjgl.input.Mouse;
 
 import java.io.File;
@@ -29,22 +27,28 @@ public class GuiIgnoreListNote extends GuiScreen {
 
 
     public GuiIgnoreListNote(String player, String addedText) {
-        this.playerName = player;
         this.addedText = addedText;
         ignoreList = ignoreListManager.ignoreList;
+        this.playerName = player;
+        if (playerName == null) page = "main"; else {
+            page = "profile";
+            uuid = MojangAPIClient.getUUID(playerName, -1);
+            playerName = MojangAPIClient.getName(uuid);
+        }
     }
 
     @Override
     public void initGui() {
-        elementTextField = new GuiElementTextField("", 200,10,0b1000001);
+        elementTextField = new GuiElementTextField("", 200,10, 12,0b1000001);
         backButton = new BackButton(width/2-110, height/2-100);
         elementTextField.setFocus(true);
         elementTextField.setMaxStringLength(999);
-        if(addedText == null) elementTextField.setText(ignoreList.get(uuid).note); else elementTextField.setText(addedText);
+        if (page.equals("profile")) headRender = new PlayerHeadRender(width/2-48, height/2-50, 6, uuid);
+        if(addedText != null) elementTextField.setText(addedText);
+        if (ignoreList.containsKey(uuid)) elementTextField.setText(ignoreList.get(uuid).note);
         playerListObjects.clear();
         final int[] i = {0};
         ignoreList.forEach((uuid, ignoreDataObject) -> {playerListObjects.add(new PlayerListObject(width/2-75, height/3+13*i[0],uuid)); i[0]++;});
-        if (playerName == null) page = "main"; else page = "profile";
         for (PlayerListObject listObject : playerListObjects) {
             listObject.visible = (listObject.y >= height / 2 - 100) && (listObject.y <= height / 2 + 165);
         }
@@ -87,11 +91,13 @@ public class GuiIgnoreListNote extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        if (page.equals("main")) {
-            int scrollDelta = Mouse.getEventDWheel();
-            if (scrollDelta != 0) if (scrollDelta < 0) {
-                if (startIndex < playerListObjects.size() - LIST_SIZE) startIndex++;
-            } else if (startIndex > 0) startIndex--;
+        int scrollDelta = Mouse.getEventDWheel();
+        if (scrollDelta != 0) {
+            if (page.equals("main")) {
+                if (scrollDelta < 0) {
+                    if (startIndex < playerListObjects.size() - LIST_SIZE) startIndex++;
+                } else if (startIndex > 0) startIndex--;
+            } else elementTextField.scroll(scrollDelta);
         }
     }
 

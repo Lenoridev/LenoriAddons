@@ -41,13 +41,14 @@ public class CommandIgnoreNote extends CommandBase {
             } else {
                 addedText = args[1];
             }
-            LOGGER.warn("Command executed by non-player sender.");
-        }
+        } else LOGGER.warn("Command executed by non-player sender.");
     }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         Minecraft.getMinecraft().displayGuiScreen(new GuiIgnoreListNote(specifiedPlayer,addedText));
+        specifiedPlayer = null;
+        addedText = null;
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 
