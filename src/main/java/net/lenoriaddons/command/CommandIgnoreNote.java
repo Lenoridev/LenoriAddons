@@ -39,7 +39,12 @@ public class CommandIgnoreNote extends CommandBase {
             }else if(args.length==1) {
                 specifiedPlayer = args[0];
             } else {
-                addedText = args[1];
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 1; i < args.length; i++) {
+                    stringBuilder.append(args[i]);
+                    stringBuilder.append(" ");
+                }
+                addedText = stringBuilder.toString();
             }
         } else LOGGER.warn("Command executed by non-player sender.");
     }
@@ -47,8 +52,6 @@ public class CommandIgnoreNote extends CommandBase {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         Minecraft.getMinecraft().displayGuiScreen(new GuiIgnoreListNote(specifiedPlayer,addedText));
-        specifiedPlayer = null;
-        addedText = null;
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 

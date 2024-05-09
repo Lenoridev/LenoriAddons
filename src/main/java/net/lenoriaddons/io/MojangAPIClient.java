@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -28,8 +30,9 @@ public class MojangAPIClient {
             } else {
                 url = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
             }
-
-            InputStreamReader reader = new InputStreamReader(url.openStream());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+            if (connection.getResponseCode() > 299) return null;
             String idString = jsonParser.parse(reader).getAsJsonObject().get("id").getAsString();
             return UUID.fromString(idString.substring(0, 8) + "-" + idString.substring(8, 12) + "-" + idString.substring(12, 16) + "-" + idString.substring(16, 20) + "-" + idString.substring(20));
 
@@ -61,10 +64,9 @@ public class MojangAPIClient {
     public static String getName(UUID uuid) {
         try {
             HttpURLConnection connection = getGetConnection("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid);
-            int status = connection.getResponseCode();
             InputStreamReader streamReader;
 
-            if (status > 299) {
+            if (connection.getResponseCode() > 299) {
                 return null;
             } else {
                 streamReader = new InputStreamReader(connection.getInputStream());

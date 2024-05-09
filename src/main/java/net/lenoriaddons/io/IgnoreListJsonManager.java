@@ -68,10 +68,14 @@ public class IgnoreListJsonManager {
                     continue;
                 }
                 JsonObject object = (JsonObject) element1;
-                UUID uuid = UUID.fromString(object.getAsJsonPrimitive("uuid").getAsString());
-                long timestamp = object.getAsJsonPrimitive("timestamp").getAsLong();
-                String note = object.getAsJsonPrimitive("note").getAsString();
-                ignoreList.put(uuid, new IgnoreDataObject(timestamp, note));
+                try {
+                    UUID uuid = UUID.fromString(object.getAsJsonPrimitive("uuid").getAsString());
+                    long timestamp = object.getAsJsonPrimitive("timestamp").getAsLong();
+                    String note = object.getAsJsonPrimitive("note").getAsString();
+                    ignoreList.put(uuid, new IgnoreDataObject(timestamp, note));
+                } catch (NullPointerException e) {
+                    LenoriAddons.LOGGER.warn("NullPointerException while loading the IgnoreList! Is the file corrupted? Skipping the Json Object.");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
