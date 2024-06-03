@@ -7,6 +7,7 @@
 
 package net.lenoriaddons.gui;
 
+import net.lenoriaddons.LenoriAddons;
 import net.lenoriaddons.util.StringUtils;
 import net.lenoriaddons.util.TextRenderUtils;
 import net.lenoriaddons.util.Utils;
@@ -453,22 +454,22 @@ public class GuiElementTextField {
 
             if ((options & NUM_ONLY) != 0 && textField.getText().matches("[^0-9.]")) textField.setText(old);
 
-            int cursorPosition = textField.getCursorPosition();
-            int lastLineBreak = text.lastIndexOf('\n', cursorPosition);
-            int nextLineBreak = text.indexOf('\n', cursorPosition);
-            if (nextLineBreak == -1) nextLineBreak = text.length();
-            if (lastLineBreak >= nextLineBreak && lastLineBreak != 0) lastLineBreak--;
-            if (Minecraft.getMinecraft().fontRendererObj.getStringWidth(text.substring(lastLineBreak + 1, nextLineBreak) + "aaaa") > getWidth() && !Arrays.asList(14, 200, 203, 205, 208, 28).contains(keyCode)) newLine();
 
+            String[] texts = (prependText + textField.getText()).split("\n");
+            if (startIndex < texts.length - searchBarYSize) startIndex = texts.length - searchBarYSize;
+            if (Arrays.asList(200, 203, 205, 208).contains(keyCode)) { //Arrow keys
+                if (textField.getCursorPosition() < text.indexOf(texts[startIndex])) startIndex--;
+            }
         }
     }
 
     public void newLine() {
         String before = textField.getText().substring(0, textField.getCursorPosition());
         String after = textField.getText().substring(textField.getCursorPosition());
-        int pos = textField.getCursorPosition();
         textField.setText(before + "\n" + after);
-        textField.setCursorPosition(pos + 1);
+        LenoriAddons.LOGGER.info("New line inserted. Text before: " + before + ", Text after: " + after);
+        textField.setCursorPosition(before.length() + 1);
+        LenoriAddons.LOGGER.info("Cursor position updated to: " + textField.getCursorPosition());
     }
 
     public void render(int x, int y) {
@@ -481,6 +482,20 @@ public class GuiElementTextField {
             int x, int y, int searchBarXSize, int searchBarYSize, int searchBarPadding,
             GuiTextField textField, boolean focus
     ) {
+        String text1 = textField.getText();
+        int cursorPosition = textField.getCursorPosition();
+        int lastLineBreak = text1.lastIndexOf('\n', cursorPosition);
+        int nextLineBreak = text1.indexOf('\n', cursorPosition);
+        if (nextLineBreak == -1) nextLineBreak = text1.length();
+        if (lastLineBreak >= nextLineBreak && lastLineBreak != 0) lastLineBreak--;
+        if (Minecraft.getMinecraft().fontRendererObj.getStringWidth(text1.substring(lastLineBreak + 1, nextLineBreak)) + 15 > searchBarXSize) { //text out of bounds
+
+            newLine();
+            LenoriAddons.LOGGER.info("textfieldcursorpos: " + textField.getCursorPosition());
+            LenoriAddons.LOGGER.info("text length: " + text1.length());
+            textField.setCursorPosition(nextLineBreak + 1);
+        }
+
         ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
         String renderText = prependText + textField.getText();
 
@@ -538,45 +553,46 @@ public class GuiElementTextField {
 
         int xStartOffset = 5;
         float scale = 1;
-        String[] texts = text.split("\n");
-        for (int yOffI = startIndex; yOffI < texts.length; yOffI++) {
-            int yOff = yOffI * extraSize;
-
-            if (isScaling() && Minecraft.getMinecraft().fontRendererObj.getStringWidth(texts[yOffI]) > searchBarXSize - 10) {
-                scale = (searchBarXSize - 2) / (float) Minecraft.getMinecraft().fontRendererObj.getStringWidth(texts[yOffI]);
-                if (scale > 1) scale = 1;
-                float newLen = Minecraft.getMinecraft().fontRendererObj.getStringWidth(texts[yOffI]) * scale;
-                xStartOffset = (int) ((searchBarXSize - newLen) / 2f);
-
-                TextRenderUtils.drawStringCenteredScaledMaxWidth(
-                        Utils.chromaStringByColourCode(texts[yOffI]),
-                        Minecraft.getMinecraft().fontRendererObj,
-                        x + searchBarXSize / 2f,
-                        y + searchBarYSize / 2f + yOff,
-                        false,
-                        searchBarXSize - 2,
-                        customTextColour
-                );
+        char[] chars = text.toCharArray();
+        String[] texts = new String[] {""};
+        if (chars.length != 0) {
+            if (chars[chars.length - 1] == '\n') {
+                texts = (text + " ").split("\n");
             } else {
+                texts = text.split("\n");
+            }
+        }
+
+        int i2 = 0;
+        for (int yOffI = startIndex; yOffI < Math.min(texts.length, startIndex + searchBarYSize); yOffI++) {
 
                     String toRender = Minecraft.getMinecraft().fontRendererObj.trimStringToWidth(Utils.chromaStringByColourCode(
                             texts[yOffI]), searchBarXSize - 10);
                     Minecraft.getMinecraft().fontRendererObj.drawString(toRender, x + 5,
-                            y + (searchBarYSize - 8) / 2 + yOff, customTextColour
+                            y + (searchBarYSize - 8) / 2 + i2 * extraSize, customTextColour
                     );
-            }
+                i2++;
         }
 
+        if (startIndex > texts.length) startIndex = 0;
+
         if (focus && System.currentTimeMillis() % 1000 > 500) {
-            String textNCBeforeCursor = textNoColor.substring(0, textField.getCursorPosition() + prependText.length());
-            int colorCodes = org.apache.commons.lang3.StringUtils.countMatches(textNCBeforeCursor, "\u00B6");
-            String textBeforeCursor = text.substring(
-                    0,
-                    Math.min(
-                            text.length(),
-                            textField.getCursorPosition() + prependText.length() + (((options & COLOUR) != 0) ? colorCodes * 2 : 0)
-                    )
-            );
+            //String textNCBeforeCursor = textNoColor.substring(textNoColor.indexOf(texts[startIndex]) - 1, textField.getCursorPosition() + prependText.length());
+            //int colorCodes = org.apache.commons.lang3.StringUtils.countMatches(textNCBeforeCursor, "\u00B6");
+            String textBeforeCursor;
+            if (texts.length > searchBarYSize) {
+                LenoriAddons.LOGGER.info("Index of first char: " + text.indexOf(texts[startIndex]));
+                LenoriAddons.LOGGER.info("Cursor position: " + textField.getCursorPosition());
+                //if (textField.getCursorPosition() < text.indexOf(texts[startIndex])) textField.setCursorPosition(text.indexOf(texts[startIndex]));
+                int startCharIndex = text.indexOf(texts[startIndex]);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = startCharIndex; i < textField.getCursorPosition(); i++) {
+                    stringBuilder.append(chars[i]);
+                }
+                textBeforeCursor = stringBuilder.toString();
+            } else {
+                textBeforeCursor = text.substring(0, textField.getCursorPosition());
+            }
 
             int numLinesBeforeCursor = org.apache.commons.lang3.StringUtils.countMatches(textBeforeCursor, "\n");
             int yOff = numLinesBeforeCursor * extraSize;
@@ -676,7 +692,7 @@ public class GuiElementTextField {
 
     public void scroll(int scrollDelta) {
         if (scrollDelta < 0) {
-            if (startIndex < org.apache.commons.lang3.StringUtils.countMatches(prependText + getText(), "\n") - MAX_LINES) startIndex++;
+            if (startIndex < (org.apache.commons.lang3.StringUtils.countMatches(prependText + getText(), "\n") + 1) - searchBarYSize) startIndex++;
         } else if (startIndex > 0) startIndex--;
     }
 }

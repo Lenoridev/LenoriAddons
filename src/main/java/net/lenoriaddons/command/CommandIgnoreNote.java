@@ -33,12 +33,14 @@ public class CommandIgnoreNote extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (sender instanceof EntityPlayer) {
-            MinecraftForge.EVENT_BUS.register(this);
             if(args.length == 0) {
                 ((EntityPlayer) sender).addChatComponentMessage(new ChatComponentText(EnumChatFormatting.RED +"Usage: /ignorenote <player> [additional text]"));
+                specifiedPlayer = null;
+                addedText = null;
             }else if(args.length==1) {
                 specifiedPlayer = args[0];
             } else {
+                specifiedPlayer = args[0];
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < args.length; i++) {
                     stringBuilder.append(args[i]);
@@ -46,6 +48,7 @@ public class CommandIgnoreNote extends CommandBase {
                 }
                 addedText = stringBuilder.toString();
             }
+            MinecraftForge.EVENT_BUS.register(this);
         } else LOGGER.warn("Command executed by non-player sender.");
     }
 

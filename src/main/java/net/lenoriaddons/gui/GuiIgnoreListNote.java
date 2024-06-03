@@ -54,7 +54,7 @@ public class GuiIgnoreListNote extends GuiScreen {
         if(addedText != null) {
             char[] addedTextCharArray = addedText.toCharArray();
             for (char c : addedTextCharArray) {
-                elementTextField.keyTyped(c, 30); //Used keycode 30 for "A" as default, may break stuff
+                elementTextField.keyTyped(c, 30); //Using keycode 30 for "A" as default, may break stuff
             }
         }
         playerListObjects.clear();
@@ -118,7 +118,7 @@ public class GuiIgnoreListNote extends GuiScreen {
                 if (scrollDelta < 0) {
                     if (startIndex < playerListObjects.size() - LIST_SIZE) startIndex++;
                 } else if (startIndex > 0) startIndex--;
-            } else elementTextField.scroll(scrollDelta);
+            } else if (page.equals("profile")) elementTextField.scroll(scrollDelta);
         }
     }
 
